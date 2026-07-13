@@ -3,13 +3,13 @@ pipeline {
 
 tools {
         jdk 'JDK21'
-        maven 'maven'
+        maven 'Maven'
 }
 
 stages {
         stage('checkout'){
         steps {
-                checkout scm
+                checkout SCM
 }
 }
 stage('Build') {
