@@ -46,10 +46,17 @@ pipeline {
             }
         }
 
+stage('Quality Gate') {
+    steps {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
         stage('Package') {
             steps {
                      sh 'rm -rf .scannerwork'
-                sh 'mvn package'
+                sh 'mvn clean  package'
             }
         }
     }
