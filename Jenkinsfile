@@ -47,6 +47,7 @@ pipeline {
 
         stage('Package') {
             steps {
+                     sh 'rm -rf .scannerwork'
                 sh 'mvn package'
             }
         }
