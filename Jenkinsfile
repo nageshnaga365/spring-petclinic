@@ -8,64 +8,56 @@ pipeline {
     }
 
     environment {
-        APP_NAME = "spring-petclinic"
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo "==============================="
-                echo "Checking out source code..."
-                echo "==============================="
-
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Compile') {
             steps {
-                echo "==============================="
-                echo "Compiling Project..."
-                echo "==============================="
-
                 sh 'mvn clean compile'
             }
         }
 
         stage('Unit Test') {
             steps {
-                echo "==============================="
-                echo "Running Unit Tests..."
-                echo "==============================="
-
                 sh 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh """
+                    ${SCANNER_HOME}/bin/sonar-scanner \
+                    -Dsonar.projectKey=spring-petclinic \
+                    -Dsonar.projectName=Spring-PetClinic \
+                    -Dsonar.sources=src \
+                    -Dsonar.java.binaries=target/classes
+                    """
+                }
             }
         }
 
         stage('Package') {
             steps {
-                echo "==============================="
-                echo "Packaging Application..."
-                echo "==============================="
-
                 sh 'mvn package'
             }
         }
     }
 
     post {
-
-        always {
-            echo "Pipeline execution completed."
-        }
-
         success {
-            echo "Build Successful"
+            echo 'Pipeline executed successfully.'
         }
-
         failure {
-            echo "Build Failed"
+            echo 'Pipeline failed.'
         }
     }
 }
