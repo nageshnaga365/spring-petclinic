@@ -21,6 +21,7 @@ pipeline {
 
         stage('Compile') {
             steps {
+                 sh 'rm -rf .scannerwork'
                 sh 'mvn clean compile'
             }
         }
